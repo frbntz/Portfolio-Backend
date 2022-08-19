@@ -24,20 +24,20 @@ public class PersonaController {
     @Autowired
     IPersonaService ipersonaService;
 
-    @GetMapping("personas/traer")
+    @GetMapping("/traer")
     public List<Persona> getPersona() {
         return ipersonaService.getPersona();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/personas/crear")
+    @PostMapping("/crear")
     public String createPersona(@RequestBody Persona persona) {
         ipersonaService.savePersona(persona);
         return "La persona fue creada correctamente";
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/personas/borrar/{id}")
+    @DeleteMapping("/borrar/{id}")
     public String deletePersona(@PathVariable int id) {
         ipersonaService.deletePersona(id);
         return "La persona fue eliminada correctamente";
@@ -45,19 +45,28 @@ public class PersonaController {
 
     // URL: port/personas/editar/4/nombre & apellido & img
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/personas/editar/{id}")
+    @PutMapping("/editar/{id}")
     public Persona editPersona(@PathVariable int id,
             @RequestParam("nombre") String nuevoNombre,
             @RequestParam("apellido") String nuevoApellido,
-            @RequestParam("img") String nuevoImg) {
+            @RequestParam("img") String nuevoImg,
+            @RequestParam("about") String about)
+    
+    {
         Persona persona = ipersonaService.findPersona(id);
 
         persona.setNombre(nuevoNombre);
         persona.setApellido(nuevoApellido);
         persona.setImg(nuevoImg);
+        persona.setAbout(about);
 
         ipersonaService.savePersona(persona);
         return persona;
 
+    }
+    
+    @GetMapping("/traer/perfil")
+    public Persona findPersona() {
+        return ipersonaService.findPersona((int)1);
     }
 }
