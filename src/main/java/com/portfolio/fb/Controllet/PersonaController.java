@@ -2,8 +2,11 @@ package com.portfolio.fb.Controllet;
 
 import com.portfolio.fb.Entity.Persona;
 import com.portfolio.fb.Interface.IPersonaService;
+import com.portfolio.fb.Security.Controller.Mensaje;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -46,7 +49,7 @@ public class PersonaController {
     // URL: port/personas/editar/4/nombre & apellido & img
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/editar/{id}")
-    public Persona editPersona(@PathVariable int id,
+    public ResponseEntity editPersona(@PathVariable("id") int id,
             @RequestParam("nombre") String nuevoNombre,
             @RequestParam("apellido") String nuevoApellido,
             @RequestParam("img") String nuevoImg,
@@ -61,7 +64,7 @@ public class PersonaController {
         persona.setAbout(about);
 
         ipersonaService.savePersona(persona);
-        return persona;
+        return new ResponseEntity(new Mensaje("Atributos actualizados"), HttpStatus.OK);
 
     }
     
