@@ -1,5 +1,6 @@
 package com.portfolio.fb.Controllet;
 
+import com.portfolio.fb.Dto.dtoPersona;
 import com.portfolio.fb.Entity.Persona;
 import com.portfolio.fb.Interface.IPersonaService;
 import com.portfolio.fb.Security.Controller.Mensaje;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -49,27 +49,22 @@ public class PersonaController {
     // URL: port/personas/editar/4/nombre & apellido & img
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/editar/{id}")
-    public ResponseEntity editPersona(@PathVariable("id") int id,
-            @RequestParam("nombre") String nuevoNombre,
-            @RequestParam("apellido") String nuevoApellido,
-            @RequestParam("img") String nuevoImg,
-            @RequestParam("about") String about)
-    
-    {
+    public ResponseEntity<?> editPersona(@PathVariable("id") int id, @RequestBody dtoPersona dtop) {
+            
         Persona persona = ipersonaService.findPersona(id);
 
-        persona.setNombre(nuevoNombre);
-        persona.setApellido(nuevoApellido);
-        persona.setImg(nuevoImg);
-        persona.setAbout(about);
+        persona.setNombre(dtop.getNombre());
+        persona.setApellido(dtop.getApellido());
+        persona.setImg(dtop.getImg());
+        persona.setAbout(dtop.getAbout());
 
         ipersonaService.savePersona(persona);
         return new ResponseEntity(new Mensaje("Atributos actualizados"), HttpStatus.OK);
 
     }
-    
+
     @GetMapping("/traer/perfil")
     public Persona findPersona() {
-        return ipersonaService.findPersona((int)1);
+        return ipersonaService.findPersona((int) 1);
     }
 }
